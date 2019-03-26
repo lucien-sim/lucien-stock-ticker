@@ -46,14 +46,14 @@ class ticker_retrieval():
         len_ts = self.close_prices.index.max()-self.close_prices.index.min()
         
         # Initialize the figure
-        p = figure(plot_width=800,plot_height=300,x_axis_type="datetime",
+        p = figure(plot_width=800,plot_height=300,x_axis_type="datetime", sizing_mode='scale_width',
                    tools='pan,wheel_zoom,box_zoom,reset,previewsave')
 
         # Always plot the time series as a line. 
         lr = p.line('Date',self.stock_code,source=ColumnDataSource(self.close_prices),color='red',line_width=2,alpha=1)
 
         # Also plot circles if displaying less than 6 months of data. 
-        if len_ts<=pd.Timedelta('183 days'): 
+        if len_ts<=pd.Timedelta('270 days'): 
             cr = p.circle('Date',self.stock_code,source=ColumnDataSource(self.close_prices),size=12,
                           fill_color='grey',fill_alpha=0.25,hover_color='green',
                           hover_alpha=0.5,line_color=None,hover_line_color=None)
@@ -61,6 +61,14 @@ class ticker_retrieval():
         # Add axis names
         p.xaxis.axis_label = "Date"
         p.yaxis.axis_label = self.stock_code+" closing price"
+        
+        # Change axis font sizes and styles
+        p.yaxis.axis_label_text_font_size='12pt'
+        p.yaxis.axis_label_text_font_style='normal'
+        p.yaxis.major_label_text_font_size='10pt'
+        p.xaxis.axis_label_text_font_size='12pt'
+        p.xaxis.axis_label_text_font_style='normal'
+        p.xaxis.major_label_text_font_size='10pt'
         
         # Create outline for the plot
         p.outline_line_width = 1
@@ -77,7 +85,7 @@ class ticker_retrieval():
 
         # Format the hover tool output. 
         tooltips = [('date','@date_str'),('closing','@'+self.stock_code)]
-        if len_ts<=pd.Timedelta('183 days'): 
+        if len_ts<=pd.Timedelta('270 days'): 
             p.add_tools(HoverTool(tooltips=tooltips, renderers=[cr], mode='mouse'))
         else: 
             p.add_tools(HoverTool(tooltips=tooltips, renderers=[lr], mode='mouse'))

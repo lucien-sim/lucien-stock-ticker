@@ -1,49 +1,30 @@
 from flask import Flask, render_template, request, redirect
 from bokeh.resources import CDN
-import json
-
 from bokeh.embed import components
-
-from bokeh.embed import autoload_static
-from bokeh.embed import file_html
-
-from bokeh.plotting import figure
-
 from global_fcns import ticker_retrieval
 from global_vbls import quandl_key
 
 app = Flask(__name__)
 
 # Create app attribute caled 'vars,' which will hold form responses. Initialize with default values
-app.vars = {'start_date':'2019-01-01','end_date':'2019-02-28','stock_code':'AAPL'}
+app.vars = {'start_date':'2019-01-01','end_date':'2019-01-31','stock_code':'AAPL'}
 
 @app.route('/')
 def index():
     
-    # Retrieve ticker data, create plot
     try: 
+        # Retrieve ticker data, create plot
         tr = ticker_retrieval(app.vars['stock_code'],app.vars['start_date'],app.vars['end_date'],quandl_key)
         tr.get_ticker_data()
+        p = tr.create_plot()
+        # Stuff for embedding bokeh plot in webpage. 
+        script, div = components(p)
     except: 
-        tr = ticker_retrieval('AAPL',app.vars['start_date'],app.vars['end_date'],quandl_key)
-        tr.get_ticker_data()
-    p = tr.create_plot()
-
-    # Create scripts
-    js_path = "/Users/Lucien/Documents/TDI/twelve_day_program/stock-ticker-app/js_bokeh_plots"
-    js,tag = autoload_static(p,CDN,js_path)
-    with open(js_path+"/ticker_plot.js",'w') as f: 
-        f.write(js)
-        
-    with open("plot.html",'w') as f: 
-        f.write(file_html(p, CDN, "my_plot"))
+        # If data retrieval was unsuccessful, print an error in place of the plot! 
+        script = ""
+        div = r"<div><p>Error! Stock code was entered incorrectly OR data is unavailable for the entered stock.</p><div>"
     
-    #return render_template('index.html',script_tag=tag,bokeh_resources=CDN.render())
-    
-    # Stuff for embedding bokeh plot in webpage, using HTML. 
-    script, div = components(p)
-    return render_template('index.html',script_tag=tag,script=script,div=div,bokeh_resources=CDN.render())
-
+    return render_template('index.html',script=script,div=div,bokeh_resources=CDN.render(),st_date=app.vars['start_date'],ed_date=app.vars['end_date'],scode=app.vars['stock_code'])
 
 @app.route('/submit_tick',methods=['POST'])
 def submit_tick():

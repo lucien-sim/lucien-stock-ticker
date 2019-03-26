@@ -1,7 +1,5 @@
-pandas
-bokeh
-dill
-flask
-jinja2
-pip
-simplejson
+requests=2.20.0
+bokeh=1.0.4
+pandas=0.24.1
+simplejson==3.16.0
+flask==1.0.2
