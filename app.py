@@ -3,6 +3,7 @@ from bokeh.resources import CDN
 from bokeh.embed import components
 from global_fcns import ticker_retrieval
 from global_vbls import quandl_key
+import os
 
 app = Flask(__name__)
 
@@ -37,6 +38,6 @@ def submit_tick():
     # Then re-direct to the index page (will now display the new plot). 
     return redirect('/')
 
-if __name__ == "__main__": 
-    app.run(debug=False)
-    
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)    
