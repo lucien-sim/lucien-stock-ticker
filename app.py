@@ -25,7 +25,8 @@ def index():
         script = ""
         div = r"<div><p>Error! Stock code was entered incorrectly OR data is unavailable for the entered stock.</p><div>"
     
-    return render_template('index.html',script=script,div=div,bokeh_resources=CDN.render(),st_date=app.vars['start_date'],ed_date=app.vars['end_date'],scode=app.vars['stock_code'])
+    return render_template('index.html',script=script,div=div,bokeh_resources=CDN.render(),
+                           st_date=app.vars['start_date'],ed_date=app.vars['end_date'],scode=app.vars['stock_code'])
 
 @app.route('/submit_tick',methods=['POST'])
 def submit_tick():
