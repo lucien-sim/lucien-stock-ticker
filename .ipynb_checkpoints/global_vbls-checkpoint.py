@@ -1,1 +1,0 @@
-quandl_key = 'f4PW8BojCd28kU31djmB'
